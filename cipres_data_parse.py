@@ -44,7 +44,8 @@ def process_beauti(file_name):
             # Process the dataType lines
             if re.search(regex_datatype, line):
                 line = re.sub(regex_datatype, '', line)
-                data_type = re.sub('".*', '', line)
+                line = re.sub('".*', '', line)
+                data_type = re.sub('\s*', '', line)
 
             # Process the lines that list number of patterns
             # Increment pattern and partition counts
@@ -72,10 +73,18 @@ with open(file_name, 'rU') as fin:
 # Process BEAUTi files
 if file_type == 'beauti':
     data_type, is_codon, partition_count, pattern_count = process_beauti(file_name)
-    print 'file type:            ', file_type
-    print 'data type:            ', data_type
-    print 'Is codon file:        ', is_codon
-    print 'number of partitions: ', partition_count
-    print 'number of patterns:   ', pattern_count
+    results =  'file_type=' + file_type + '\n'
+    results += 'data_type=' + data_type + '\n'
+    results += 'is_codon=' + str(is_codon) + '\n'
+    results += 'partition_count=' + str(partition_count) +'\n'
+    results += 'pattern_count=' + str(pattern_count)
+
+print results
+
+#    print 'file type:            ', file_type
+#    print 'data type:            ', data_type
+#    print 'Is codon file:        ', is_codon
+#    print 'number of partitions: ', partition_count
+#    print 'number of patterns:   ', pattern_count
 
 
