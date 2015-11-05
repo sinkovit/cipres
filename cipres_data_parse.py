@@ -80,11 +80,3 @@ if file_type == 'beauti':
     results += 'pattern_count=' + str(pattern_count)
 
 print results
-
-#    print 'file type:            ', file_type
-#    print 'data type:            ', data_type
-#    print 'Is codon file:        ', is_codon
-#    print 'number of partitions: ', partition_count
-#    print 'number of patterns:   ', pattern_count
-
-
