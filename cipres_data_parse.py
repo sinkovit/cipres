@@ -31,32 +31,38 @@ def process_beauti(file_name):
     partition_count = 0
     pattern_count   = 0
 
-    # Define the regular expressions that will be used to identify
+    # Define the regex that will be used to identify
     # and parse the dataType, npatterns and codon lines
     regex_datatype = '.*alignment.*data[tT]ype\s*=\s*"'
     regex_patterns = '.*npatterns\s*=\s*'
     regex_codon    = 'codon'
+
+    # Compile the regex. Probably doesn't make a performance difference
+    # since python will cache recently used regex, but doesn't hurt
+    cregex_datatype = re.compile('.*alignment.*data[tT]ype\s*=\s*"')
+    cregex_patterns = re.compile('.*npatterns\s*=\s*')
+    cregex_codon    = re.compile('codon')
 
     with open(file_name, 'rU') as fin:
         for line in fin:
             line = line.rstrip()
 
             # Process the dataType lines
-            if re.search(regex_datatype, line):
+            if cregex_datatype.search(line):
                 line = re.sub(regex_datatype, '', line)
                 line = re.sub('".*', '', line)
                 data_type = re.sub('\s*', '', line)
 
             # Process the lines that list number of patterns
             # Increment pattern and partition counts
-            if re.search(regex_patterns, line):
+            if cregex_patterns.search(line):
                 line = re.sub(regex_patterns, '', line)
                 line = re.sub('\D.*', '', line)
                 pattern_count   += int(line)
                 partition_count += 1
                     
             # Look for lines that contain the string "codon"
-            if re.search(regex_codon, line):
+            if cregex_codon.search(line):
                 is_codon = True
 
     return data_type, is_codon, partition_count, pattern_count
