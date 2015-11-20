@@ -16,9 +16,9 @@ import re
 import sys
 file_name = sys.argv[1]
 
-def process_beauti(file_name):
+def process_beast(file_name):
 
-    # Process BEAUTi format files and return following
+    # Process BEAST files and return following
     #
     #    Data type (nucleotide or amino acid)
     #    Codon file (True or False)
@@ -67,22 +67,60 @@ def process_beauti(file_name):
 
     return data_type, is_codon, partition_count, pattern_count
 
+def process_beast2(file_name):
+
+    # Process BEAST2 files and return following
+    #
+    #    Number of partitions
+
+    # Partition count is determined from the number of <distribution
+    # ...> </distribution> pairs appearing AFTER the tag starting with
+    # <distribution id="likelihood"
+
+    # Initialize results
+    partition_count = 0
+    start_counting = False
+
+    with open(file_name, 'rU') as fin:
+        for line in fin:
+            line = line.rstrip()
+            
+            # Look for the starting line
+            if line.find('<distribution id="likelihood"') >= 0:
+                start_counting = True
+                continue
+                
+            # Start counting partitions
+            if start_counting and line.find('<distribution') >= 0 and line.find('/>') < 0:
+                partition_count += 1
+
+    return partition_count
+
 
 # Determine the input file type
 file_type = 'unknown'
 with open(file_name, 'rU') as fin:
     for line in fin:
         if line.find('BEAUTi') >= 0:
-            file_type = 'beauti'
+            file_type = 'beast'
+            break
+        if line.find('<beast') >= 0 and line.find('version="2.0">') >= 0:
+            file_type = 'beast2'
             break
 
-# Process BEAUTi files
-if file_type == 'beauti':
-    data_type, is_codon, partition_count, pattern_count = process_beauti(file_name)
+# Process BEAST files
+if file_type == 'beast':
+    data_type, is_codon, partition_count, pattern_count = process_beast(file_name)
     results =  'file_type=' + file_type + '\n'
     results += 'data_type=' + data_type + '\n'
     results += 'is_codon=' + str(is_codon) + '\n'
     results += 'partition_count=' + str(partition_count) +'\n'
     results += 'pattern_count=' + str(pattern_count)
+
+# Process BEAST2 files
+if file_type == 'beast2':
+    partition_count = process_beast2(file_name)
+    results =  'file_type=' + file_type + '\n'
+    results += 'partition_count=' + str(partition_count)
 
 print results
