@@ -1,8 +1,8 @@
 # Program: cipres_data_parse 
 #
 # Description: Standalone Python program to parse data files uploaded
-# to CIPRES gateway. Currently configued only to handle BEAUTi files,
-# but will be extended to other file formats
+# to CIPRES gateway. Currently configued to handle BEAST and BEAST2
+# input files, but will be extended to other file formats
 #
 # Note that all files are opened with universal newlines support
 # ('rU') so that we can handle files created using the Linux, Windows
