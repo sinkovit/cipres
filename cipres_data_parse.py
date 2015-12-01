@@ -10,11 +10,19 @@
 #
 # Author: Robert Sinkovits, SDSC
 #
-# Usage: cipres_data_parse [filename] 
+# Usage: cipres_data_parse [file_name] <file_type>
 
 import re
-import sys
-file_name = sys.argv[1]
+import argparse
+
+# Process the command line arguments
+file_types = ['beast', 'beast2', 'migrate_parm', 'migrate_infile']
+parser     = argparse.ArgumentParser(description='Process file name and file type cmd line args')
+parser.add_argument(dest='file_name')
+parser.add_argument('-t', '--type', dest='file_type', choices=file_types, default='unknown')
+args      = parser.parse_args()
+file_name = args.file_name
+file_type = args.file_type
 
 def process_beast(file_name):
 
@@ -139,23 +147,23 @@ def process_migrate_infile(file_name):
 
     return loci
 
+#--------------------------------------------------------------
+# ------------------- Start main program ----------------------
+#--------------------------------------------------------------
 
-# Determine the input file type
-file_type = 'unknown'
-with open(file_name, 'rU') as fin:
-    for line in fin:
-        if line.find('BEAUTi') >= 0:
-            file_type = 'beast'
-            break
-        if line.find('<beast') >= 0 and line.find('version="2.0">') >= 0:
-            file_type = 'beast2'
-            break
-        if line.find('Parmfile for Migrate') >= 0:
-            file_type = 'migrate_parm'
-            break
-        if line.find('Microsatellite data set') >= 0: # KLUDGE
-            file_type = 'migrate_infile'
-            break
+# Determine the input file type if not already set
+if file_type == 'unknown':
+    with open(file_name, 'rU') as fin:
+        for line in fin:
+            if line.find('BEAUTi') >= 0:
+                file_type = 'beast'
+                break
+            if line.find('<beast') >= 0 and line.find('version="2.0">') >= 0:
+                file_type = 'beast2'
+                break
+            if line.find('Parmfile for Migrate') >= 0:
+                file_type = 'migrate_parm'
+                break
 
 # Process BEAST files
 if file_type == 'beast':

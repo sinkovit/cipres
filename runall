@@ -17,3 +17,9 @@ echo "5B782.xml"; python cipres_data_parse.py BEAST2/5B782.xml; echo
 echo "84AB7.xml"; python cipres_data_parse.py BEAST2/84AB7.xml; echo
 echo "42037.xml"; python cipres_data_parse.py BEAST2/42037.xml; echo
 echo "79B12.xml"; python cipres_data_parse.py BEAST2/79B12.xml; echo
+
+echo "----- Processing Migrate parmfile -----"
+echo "parmfile.testml"; python cipres_data_parse.py Migrate/parmfile.testml; echo
+
+echo "----- Processing Migrate infile ----- "
+echo "infile.msat"; python cipres_data_parse.py Migrate/infile.msat -t migrate_infile; echo

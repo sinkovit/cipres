@@ -62,3 +62,13 @@ partition_count=9
 file_type=beast2
 partition_count=10
 
+----- Processing Migrate parmfile -----
+parmfile.testml
+file_type=migrate_parm
+replicates=2
+
+----- Processing Migrate infile ----- 
+infile.msat
+file_type=migrate_infile
+loci=10
+
