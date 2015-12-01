@@ -10,7 +10,7 @@
 #
 # Author: Robert Sinkovits, SDSC
 #
-# Usage: cipres_data_parse [file_name] <file_type>
+# Usage: cipres_data_parse [file_name] <-t file_type>
 
 import re
 import argparse
