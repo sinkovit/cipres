@@ -119,6 +119,26 @@ def process_migrate_parm(file_name):
 
     return replicates
 
+def process_migrate_infile(file_name):
+
+    # Process Migrate infile and return following
+    #
+    #    Number of loci
+
+    # Loci count is determined from 1st record, 2nd field
+
+    # Initialize loci to 1
+    loci = 1
+
+    with open(file_name, 'rU') as fin:
+        for line in fin:
+            line = line.strip()
+            pline = line.split()
+            loci = pline[1]
+            break
+
+    return loci
+
 
 # Determine the input file type
 file_type = 'unknown'
@@ -132,6 +152,9 @@ with open(file_name, 'rU') as fin:
             break
         if line.find('Parmfile for Migrate') >= 0:
             file_type = 'migrate_parm'
+            break
+        if line.find('Microsatellite data set') >= 0: # KLUDGE
+            file_type = 'migrate_infile'
             break
 
 # Process BEAST files
@@ -154,5 +177,11 @@ if file_type == 'migrate_parm':
     replicates = process_migrate_parm(file_name)
     results =  'file_type=' + file_type + '\n'
     results += 'replicates=' + str(replicates)
+
+# Process Migrate infile
+if file_type == 'migrate_infile':
+    loci = process_migrate_infile(file_name)
+    results =  'file_type=' + file_type + '\n'
+    results += 'loci=' + str(loci)
 
 print results
