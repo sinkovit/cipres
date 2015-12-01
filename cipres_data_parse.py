@@ -1,8 +1,8 @@
 # Program: cipres_data_parse 
 #
 # Description: Standalone Python program to parse data files uploaded
-# to CIPRES gateway. Currently configued to handle BEAST and BEAST2
-# input files, but will be extended to other file formats
+# to CIPRES gateway. Currently configued to handle BEAST, BEAST2 and
+# Migrate input files, but will be extended to other file formats
 #
 # Note that all files are opened with universal newlines support
 # ('rU') so that we can handle files created using the Linux, Windows
@@ -96,6 +96,29 @@ def process_beast2(file_name):
 
     return partition_count
 
+def process_migrate_parm(file_name):
+
+    # Process Migrate parmfile and return following
+    #
+    #    Number of replicates
+
+    # Replicate count is determined from the line 
+    # replicate=< NO | YES:<VALUE | LastChains> >
+
+    # Initialize replicates to 1
+    replicates = 1
+
+    with open(file_name, 'rU') as fin:
+        for line in fin:
+            line = line.rstrip()
+            
+            # Look for the starting line
+            if line.find('replicate=YES') >= 0:
+                p1, replicates = line.split(':')
+                break
+
+    return replicates
+
 
 # Determine the input file type
 file_type = 'unknown'
@@ -106,6 +129,9 @@ with open(file_name, 'rU') as fin:
             break
         if line.find('<beast') >= 0 and line.find('version="2.0">') >= 0:
             file_type = 'beast2'
+            break
+        if line.find('Parmfile for Migrate') >= 0:
+            file_type = 'migrate_parm'
             break
 
 # Process BEAST files
@@ -122,5 +148,11 @@ if file_type == 'beast2':
     partition_count = process_beast2(file_name)
     results =  'file_type=' + file_type + '\n'
     results += 'partition_count=' + str(partition_count)
+
+# Process Migrate parmfile
+if file_type == 'migrate_parm':
+    replicates = process_migrate_parm(file_name)
+    results =  'file_type=' + file_type + '\n'
+    results += 'replicates=' + str(replicates)
 
 print results
