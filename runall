@@ -1,25 +1,25 @@
 echo "----- Processing BEAST files -----"
 
-echo "AFE0.xml"; python cipres_data_parse.py BEAST/AFE0.xml; echo
-echo "benchmark2.xml"; python cipres_data_parse.py BEAST/benchmark2.xml; echo
+echo "-- AFE0.xml"; python cipres_data_parse.py BEAST/AFE0.xml; echo
+echo "-- benchmark2.xml"; python cipres_data_parse.py BEAST/benchmark2.xml; echo
 
 echo "----- Processing BEAST2 files -----"
 
-echo "D8939.xml"; python cipres_data_parse.py BEAST2/D8939.xml; echo
-echo "E1DCA.xml"; python cipres_data_parse.py BEAST2/E1DCA.xml; echo
-echo "EA13E.xml"; python cipres_data_parse.py BEAST2/EA13E.xml; echo
-echo "2D2D6.xml"; python cipres_data_parse.py BEAST2/2D2D6.xml; echo
-echo "953BF.xml"; python cipres_data_parse.py BEAST2/953BF.xml; echo
-echo "F4656.xml"; python cipres_data_parse.py BEAST2/F4656.xml; echo
-echo "85FAE.xml"; python cipres_data_parse.py BEAST2/85FAE.xml; echo
-echo "81B52.xml"; python cipres_data_parse.py BEAST2/81B52.xml; echo
-echo "5B782.xml"; python cipres_data_parse.py BEAST2/5B782.xml; echo
-echo "84AB7.xml"; python cipres_data_parse.py BEAST2/84AB7.xml; echo
-echo "42037.xml"; python cipres_data_parse.py BEAST2/42037.xml; echo
-echo "79B12.xml"; python cipres_data_parse.py BEAST2/79B12.xml; echo
+echo "-- D8939.xml --"; python cipres_data_parse.py BEAST2/D8939.xml; echo
+echo "-- E1DCA.xml --"; python cipres_data_parse.py BEAST2/E1DCA.xml; echo
+echo "-- EA13E.xml --"; python cipres_data_parse.py BEAST2/EA13E.xml; echo
+echo "-- 2D2D6.xml --"; python cipres_data_parse.py BEAST2/2D2D6.xml; echo
+echo "-- 953BF.xml --"; python cipres_data_parse.py BEAST2/953BF.xml; echo
+echo "-- F4656.xml --"; python cipres_data_parse.py BEAST2/F4656.xml; echo
+echo "-- 85FAE.xml --"; python cipres_data_parse.py BEAST2/85FAE.xml; echo
+echo "-- 81B52.xml --"; python cipres_data_parse.py BEAST2/81B52.xml; echo
+echo "-- 5B782.xml --"; python cipres_data_parse.py BEAST2/5B782.xml; echo
+echo "-- 84AB7.xml --"; python cipres_data_parse.py BEAST2/84AB7.xml; echo
+echo "-- 42037.xml --"; python cipres_data_parse.py BEAST2/42037.xml; echo
+echo "-- 79B12.xml --"; python cipres_data_parse.py BEAST2/79B12.xml; echo
 
 echo "----- Processing Migrate parmfile -----"
-echo "parmfile.testml"; python cipres_data_parse.py Migrate/parmfile.testml; echo
+echo "-- parmfile.testml --"; python cipres_data_parse.py Migrate/parmfile.testml; echo
 
 echo "----- Processing Migrate infile ----- "
-echo "infile.msat"; python cipres_data_parse.py Migrate/infile.msat -t migrate_infile; echo
+echo "-- infile.msat --"; python cipres_data_parse.py Migrate/infile.msat -t migrate_infile; echo

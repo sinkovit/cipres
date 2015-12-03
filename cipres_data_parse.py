@@ -28,16 +28,16 @@ def process_beast(file_name):
 
     # Process BEAST files and return following
     #
-    #    Data type (nucleotide or amino acid)
-    #    Codon file (True or False)
-    #    Number of partitions
-    #    Number of patterns
+    #    datatype (nucleotide or amino acid)
+    #    codon_partioning (True or False)
+    #    nu_partitions (number of partitions)
+    #    nu_patterns (number of patterns)
 
     # Initialize results
-    data_type       = 'unknown'
-    is_codon        = False
-    partition_count = 0
-    pattern_count   = 0
+    datatype           = 'unknown'
+    codon_partitioning = False
+    nu_partitions      = 0
+    pattern_count      = 0
 
     # Define the regex that will be used to identify
     # and parse the dataType, npatterns and codon lines
@@ -59,34 +59,34 @@ def process_beast(file_name):
             if cregex_datatype.search(line):
                 line = re.sub(regex_datatype, '', line)
                 line = re.sub('".*', '', line)
-                data_type = re.sub('\s*', '', line)
+                datatype = re.sub('\s*', '', line)
 
             # Process the lines that list number of patterns
             # Increment pattern and partition counts
             if cregex_patterns.search(line):
                 line = re.sub(regex_patterns, '', line)
                 line = re.sub('\D.*', '', line)
-                pattern_count   += int(line)
-                partition_count += 1
+                pattern_count += int(line)
+                nu_partitions += 1
                     
             # Look for lines that contain the string "codon"
             if cregex_codon.search(line):
-                is_codon = True
+                codon_partitioning = True
 
-    return data_type, is_codon, partition_count, pattern_count
+    return datatype, codon_partitioning, nu_partitions, pattern_count
 
 def process_beast2(file_name):
 
     # Process BEAST2 files and return following
     #
-    #    Number of partitions
+    #    nu_partitions (number of partitions)
 
     # Partition count is determined from the number of <distribution
     # ...> </distribution> pairs appearing AFTER the tag starting with
     # <distribution id="likelihood"
 
     # Initialize results
-    partition_count = 0
+    nu_partitions = 0
     start_counting = False
 
     with open(file_name, 'rU') as fin:
@@ -100,21 +100,21 @@ def process_beast2(file_name):
                 
             # Start counting partitions
             if start_counting and line.find('<distribution') >= 0 and line.find('/>') < 0:
-                partition_count += 1
+                nu_partitions += 1
 
-    return partition_count
+    return nu_partitions
 
 def process_migrate_parm(file_name):
 
     # Process Migrate parmfile and return following
     #
-    #    Number of replicates
+    #    num_reps (Number of replicates)
 
     # Replicate count is determined from the line 
     # replicate=< NO | YES:<VALUE | LastChains> >
 
     # Initialize replicates to 1
-    replicates = 1
+    num_reps = 1
 
     with open(file_name, 'rU') as fin:
         for line in fin:
@@ -122,30 +122,30 @@ def process_migrate_parm(file_name):
             
             # Look for the starting line
             if line.find('replicate=YES') >= 0:
-                p1, replicates = line.split(':')
+                p1, num_reps = line.split(':')
                 break
 
-    return replicates
+    return num_reps
 
 def process_migrate_infile(file_name):
 
     # Process Migrate infile and return following
     #
-    #    Number of loci
+    #    Number of num_loci
 
-    # Loci count is determined from 1st record, 2nd field
+    # Num_Loci count is determined from 1st record, 2nd field
 
-    # Initialize loci to 1
-    loci = 1
+    # Initialize num_loci to 1
+    num_loci = 1
 
     with open(file_name, 'rU') as fin:
         for line in fin:
             line = line.strip()
             pline = line.split()
-            loci = pline[1]
+            num_loci = pline[1]
             break
 
-    return loci
+    return num_loci
 
 #--------------------------------------------------------------
 # ------------------- Start main program ----------------------
@@ -167,29 +167,29 @@ if file_type == 'unknown':
 
 # Process BEAST files
 if file_type == 'beast':
-    data_type, is_codon, partition_count, pattern_count = process_beast(file_name)
+    datatype, codon_partitioning, nu_partitions, pattern_count = process_beast(file_name)
     results =  'file_type=' + file_type + '\n'
-    results += 'data_type=' + data_type + '\n'
-    results += 'is_codon=' + str(is_codon) + '\n'
-    results += 'partition_count=' + str(partition_count) +'\n'
+    results += 'datatype=' + datatype + '\n'
+    results += 'codon_partitioning=' + str(codon_partitioning) + '\n'
+    results += 'nu_partitions=' + str(nu_partitions) +'\n'
     results += 'pattern_count=' + str(pattern_count)
 
 # Process BEAST2 files
 if file_type == 'beast2':
-    partition_count = process_beast2(file_name)
+    nu_partitions = process_beast2(file_name)
     results =  'file_type=' + file_type + '\n'
-    results += 'partition_count=' + str(partition_count)
+    results += 'nu_partitions=' + str(nu_partitions)
 
 # Process Migrate parmfile
 if file_type == 'migrate_parm':
-    replicates = process_migrate_parm(file_name)
+    num_reps = process_migrate_parm(file_name)
     results =  'file_type=' + file_type + '\n'
-    results += 'replicates=' + str(replicates)
+    results += 'num_reps=' + str(num_reps)
 
 # Process Migrate infile
 if file_type == 'migrate_infile':
-    loci = process_migrate_infile(file_name)
+    num_loci = process_migrate_infile(file_name)
     results =  'file_type=' + file_type + '\n'
-    results += 'loci=' + str(loci)
+    results += 'num_loci=' + str(num_loci)
 
 print results
