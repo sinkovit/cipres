@@ -8,6 +8,9 @@
 # ('rU') so that we can handle files created using the Linux, Windows
 # and Mac formats
 #
+# File parsing routines have very minimal error checking capabilities,
+# definitely no substitute for a comprehensive file format checker
+#
 # Author: Robert Sinkovits, SDSC
 #
 # Usage: cipres_data_parse [file_name] <-t file_type>
@@ -38,6 +41,9 @@ def process_beast(file_name):
     codon_partitioning = False
     nu_partitions      = 0
     pattern_count      = 0
+
+    # Start by assuming successful parsing of file
+    err_code = 0
 
     # Define the regex that will be used to identify
     # and parse the dataType, npatterns and codon lines
@@ -73,7 +79,15 @@ def process_beast(file_name):
             if cregex_codon.search(line):
                 codon_partitioning = True
 
-    return datatype, codon_partitioning, nu_partitions, pattern_count
+    # Test for errors:
+    # Data type is not set to aminoacid or nucleotide
+    if datatype != 'aminoacid' and datatype != 'nucleotide':
+        err_code = 1
+    # Number of partitions or pattern counts non-positive numbers
+    if nu_partitions <= 0 or pattern_count <= 0:
+        err_code = 1
+
+    return err_code, datatype, codon_partitioning, nu_partitions, pattern_count
 
 def process_beast2(file_name):
 
@@ -89,6 +103,9 @@ def process_beast2(file_name):
     nu_partitions = 0
     start_counting = False
 
+    # Start by assuming successful parsing of file
+    err_code = 0
+
     with open(file_name, 'rU') as fin:
         for line in fin:
             line = line.rstrip()
@@ -102,7 +119,12 @@ def process_beast2(file_name):
             if start_counting and line.find('<distribution') >= 0 and line.find('/>') < 0:
                 nu_partitions += 1
 
-    return nu_partitions
+    # Test for errors:
+    # Number of partitions non-positive number
+    if nu_partitions <= 0:
+        err_code = 1
+
+    return err_code, nu_partitions
 
 def process_migrate_parm(file_name):
 
@@ -116,6 +138,9 @@ def process_migrate_parm(file_name):
     # Initialize replicates to 1
     num_reps = 1
 
+    # Start by assuming successful parsing of file
+    err_code = 0
+
     with open(file_name, 'rU') as fin:
         for line in fin:
             line = line.rstrip()
@@ -125,7 +150,12 @@ def process_migrate_parm(file_name):
                 p1, num_reps = line.split(':')
                 break
 
-    return num_reps
+    # Test for errors:
+    # number of replicates is not a valid number
+    if not str(num_reps).isdigit():
+        err_code = 1
+
+    return err_code, num_reps
 
 def process_migrate_infile(file_name):
 
@@ -138,6 +168,9 @@ def process_migrate_infile(file_name):
     # Initialize num_loci to 1
     num_loci = 1
 
+    # Start by assuming successful parsing of file
+    err_code = 0
+
     with open(file_name, 'rU') as fin:
         for line in fin:
             line = line.strip()
@@ -145,7 +178,12 @@ def process_migrate_infile(file_name):
             num_loci = pline[1]
             break
 
-    return num_loci
+    # Test for errors:
+    # number of loci is not a valid number
+    if not str(num_loci).isdigit():
+        err_code = 1
+
+    return err_code, num_loci
 
 #--------------------------------------------------------------
 # ------------------- Start main program ----------------------
@@ -167,8 +205,9 @@ if file_type == 'unknown':
 
 # Process BEAST files
 if file_type == 'beast':
-    datatype, codon_partitioning, nu_partitions, pattern_count = process_beast(file_name)
+    err_code, datatype, codon_partitioning, nu_partitions, pattern_count = process_beast(file_name)
     results =  'file_type=' + file_type + '\n'
+    results += 'err_code=' + str(err_code) + '\n'
     results += 'datatype=' + datatype + '\n'
     results += 'codon_partitioning=' + str(codon_partitioning) + '\n'
     results += 'nu_partitions=' + str(nu_partitions) +'\n'
@@ -176,20 +215,28 @@ if file_type == 'beast':
 
 # Process BEAST2 files
 if file_type == 'beast2':
-    nu_partitions = process_beast2(file_name)
+    err_code, nu_partitions = process_beast2(file_name)
     results =  'file_type=' + file_type + '\n'
+    results += 'err_code=' + str(err_code) + '\n'
     results += 'nu_partitions=' + str(nu_partitions)
 
 # Process Migrate parmfile
 if file_type == 'migrate_parm':
-    num_reps = process_migrate_parm(file_name)
+    err_code, num_reps = process_migrate_parm(file_name)
     results =  'file_type=' + file_type + '\n'
+    results += 'err_code=' + str(err_code) + '\n'
     results += 'num_reps=' + str(num_reps)
 
 # Process Migrate infile
 if file_type == 'migrate_infile':
-    num_loci = process_migrate_infile(file_name)
+    err_code, num_loci = process_migrate_infile(file_name)
     results =  'file_type=' + file_type + '\n'
+    results += 'err_code=' + str(err_code) + '\n'
     results += 'num_loci=' + str(num_loci)
+
+# Unknown or unidentifiable file type
+if file_type == 'unknown':
+    results =  'file_type=' + file_type + '\n'
+    results += 'err_code=1'
 
 print results

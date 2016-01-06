@@ -1,6 +1,7 @@
 ----- Processing BEAST files -----
 -- AFE0.xml
 file_type=beast
+err_code=0
 datatype=aminoacid
 codon_partitioning=False
 nu_partitions=20
@@ -8,6 +9,7 @@ pattern_count=4796
 
 -- benchmark2.xml
 file_type=beast
+err_code=0
 datatype=nucleotide
 codon_partitioning=False
 nu_partitions=1
@@ -16,59 +18,73 @@ pattern_count=5565
 ----- Processing BEAST2 files -----
 -- D8939.xml --
 file_type=beast2
+err_code=0
 nu_partitions=3
 
 -- E1DCA.xml --
 file_type=beast2
+err_code=0
 nu_partitions=3
 
 -- EA13E.xml --
 file_type=beast2
+err_code=0
 nu_partitions=3
 
 -- 2D2D6.xml --
 file_type=beast2
+err_code=0
 nu_partitions=4
 
 -- 953BF.xml --
 file_type=beast2
+err_code=0
 nu_partitions=4
 
 -- F4656.xml --
 file_type=beast2
+err_code=0
 nu_partitions=5
 
 -- 85FAE.xml --
 file_type=beast2
+err_code=0
 nu_partitions=6
 
 -- 81B52.xml --
 file_type=beast2
+err_code=0
 nu_partitions=6
 
 -- 5B782.xml --
 file_type=beast2
+err_code=0
 nu_partitions=7
 
 -- 84AB7.xml --
 file_type=beast2
+err_code=0
 nu_partitions=8
 
 -- 42037.xml --
 file_type=beast2
+err_code=0
 nu_partitions=9
 
 -- 79B12.xml --
 file_type=beast2
+err_code=0
 nu_partitions=10
 
 ----- Processing Migrate parmfile -----
 -- parmfile.testml --
 file_type=migrate_parm
+err_code=0
 num_reps=2
 
 ----- Processing Migrate infile ----- 
 -- infile.msat --
 file_type=migrate_infile
+err_code=0
 num_loci=10
 
